@@ -62,17 +62,41 @@ let numOrString: NumberOrStringDictionary = {
 };
 console.log(numOrString["fish"]);
 
-interface ClockInterface {
-  currentTime: Date;
-  setTime(d: Date): void;
+// interface ClockInterface {
+//   currentTime: Date;
+//   setTime(d: Date): void;
+// }
+
+// class Clock implements ClockInterface {
+//   currentTime: Date = new Date();
+
+//   constructor(h: number, m: number) {}
+
+//   setTime(d: Date): void {
+//     this.currentTime = d;
+//   }
+// }
+
+// Interfaces describe the public side of the class, rather than both the public and private side, prohibiting you from using them to check that a class also has particular types for the private side of the class instance
+
+interface ClockConstructor {
+  new (hour: number, minute: number): ClockInterface;
 }
 
-class Clock implements ClockInterface {
-  currentTime: Date = new Date();
+interface ClockInterface {
+  tick(): void;
+}
 
-  constructor(h: number, m: number) {}
-
-  setTime(d: Date): void {
-    this.currentTime = d;
+class AnalogClock implements ClockInterface {
+  currentTime: Date;
+  tick(): void {
+    console.log("Tick Tock");
   }
 }
+function createClock(ctor: ClockConstructor, hour: number, minute: number) {
+  return new ctor(hour, minute);
+}
+
+let analog = createClock(AnalogClock, 12, 17);
+
+
