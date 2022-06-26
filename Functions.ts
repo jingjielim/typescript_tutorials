@@ -23,13 +23,43 @@ function buildName(firstName: string, lastName?: string) {
   return firstName + " " + lastName;
 }
 
-let result1 = buildName("Bob")
-console.log(result1)
+let result1 = buildName("Bob");
+console.log(result1);
 
-function buildNameRest(firstName: string, ...restOfName: string[]){
-    return firstName+" " + restOfName.join(" ")
+function buildNameRest(firstName: string, ...restOfName: string[]) {
+  return firstName + " " + restOfName.join(" ");
 }
 
-let buildNameFun:(fname: string, ...rest: string[]) => string = buildNameRest
+let buildNameFun: (fname: string, ...rest: string[]) => string = buildNameRest;
 
-// Dealing with this in TypeScript
+// Dealing with `this` in TypeScript
+/**
+ * `this` is a variable that's set when a function is called.
+ */
+
+let deck = {
+  suits: ["hearts", "spades", "clubs", "diamonds"],
+  cards: Array(52),
+  createCardPicker: function () {
+    return function () {
+      let pickedCard = Math.floor(Math.random() * 52);
+      let pickedSuit = Math.floor(pickedCard / 13);
+
+      return { suit: this.suits[pickedSuit], card: pickedCard % 13 };
+    };
+  },
+};
+
+let cardPicker = deck.createCardPicker();
+let pickedCard = cardPicker();
+
+alert("card: " + pickedCard.card + " of " + pickedCard.suit);
+
+/**
+ * notice that createCardPicker is a function that itself freturns a function.
+ * If we tried to run the example, we would get an error instead of the expected alert
+ * box. This is because the `this` being used in the function created by createCardPicker
+ * will be set to window instead of our deck object. 
+ * 
+ * A top-level nonmethod syntax call like this will use window for this.
+ */
